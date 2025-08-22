@@ -2,12 +2,13 @@
 import boto3, click
 
 INSTANCE_TYPE = "t3.micro" # או t2.small
-KEY_NAME = "benlb"
 CREATED_BY_VAL = "Ben-cli"
+OWNER= "Ben Elbaz"
 
 ec2 = boto3.client("ec2")
+s3 = boto3.client("s3")
 
-@click.group(help="Ben mini EC2 CLI")
+@click.group(help="Ben's AWS management CLI")
 def cli():
     pass
 
@@ -35,13 +36,12 @@ def ec2create(name):
             InstanceType=INSTANCE_TYPE,
             MinCount=1,
             MaxCount=1,
-            KeyName=KEY_NAME,
             TagSpecifications=[{
                 "ResourceType": "instance",
                 "Tags": [
                     {"Key": "Name", "Value": name}, # Instance name
                     {"Key": "CreatedBy", "Value": CREATED_BY_VAL},
-                    {"Key": "Owner", "Value": "Ben Elbaz"},
+                    {"Key": "Owner", "Value": OWNER},
                     {"Key": "Project", "Value": "Python-Project"},
                     {"Key": "Environment", "Value": "dev"}
                 ]
@@ -94,6 +94,35 @@ def ec2list():
                   State: {state}
                   Instance type: {inst_type}
                   IP: {ip}""")
+
+@cli.command(help="Create S3 bucket (default is private, use --public for public-read)")
+@click.argument("bucket_name")
+@click.option("--public", is_flag=True, help="Make bucket public-read")
+def s3create(bucket_name, public):
+    try:
+        s3.create_bucket(Bucket=bucket_name)
+
+        s3.put_bucket_tagging(
+            Bucket=bucket_name,
+            Tagging={"TagSet": [
+                {"Key": "CreatedBy", "Value": CREATED_BY_VAL},
+                {"Key": "Owner", "Value": OWNER},
+                {"Key": "Project", "Value": "Python-Project"},
+                {"Key": "Environment", "Value": "dev"},
+            ]}
+        )
+
+        if public:
+            confirm = input("Are you sure you want to create a PUBLIC bucket? (yes/no): ").lower()
+            if confirm != "yes":
+                print("Bucket will not be created.")
+                return
+            s3.put_bucket_acl(Bucket=bucket_name, ACL="public-read")
+
+        print(f"Bucket {bucket_name} created ({'public' if public else 'private'}).")
+
+    except Exception as e:
+        print("ERROR:", str(e))
 
 if __name__ == "__main__":
     cli()
