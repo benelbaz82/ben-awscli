@@ -1,0 +1,110 @@
+#!/usr/bin/env python3
+import boto3, click
+
+INSTANCE_TYPE = "t3.micro" # או t2.small
+KEY_NAME = "benlb"
+CREATED_BY_VAL = "Ben-cli"
+
+ec2 = boto3.client("ec2")
+
+@click.group(help="Ben mini EC2 CLI")
+def cli():
+    pass
+
+def count_cli_instances():
+    resp = ec2.describe_instances(
+        Filters=[{"Name": "tag:CreatedBy", "Values": [CREATED_BY_VAL]}]
+    )
+    count = 0
+    for r in resp.get("Reservations", []):
+        for inst in r.get("Instances", []):
+            state = inst["State"]["Name"]
+            if state != "terminated":
+                count += 1
+    return count
+
+@cli.command(help="Create instance (name only)")
+@click.argument("name")
+def ec2create(name):
+    running = count_cli_instances()
+    if running >= 2:
+        print("ERROR: Instance cap reached (2). Terminate one before creating a new one.")
+    else:
+        run_instance = ec2.run_instances(
+            ImageId="ami-00ca32bbc84273381",  # Amazon Linux ami in us-east-1
+            InstanceType=INSTANCE_TYPE,
+            MinCount=1,
+            MaxCount=1,
+            KeyName=KEY_NAME,
+            TagSpecifications=[{
+                "ResourceType": "instance",
+                "Tags": [
+                    {"Key": "Name", "Value": name}, # Instance name
+                    {"Key": "CreatedBy", "Value": CREATED_BY_VAL},
+                    {"Key": "Owner", "Value": "Ben Elbaz"},
+                    {"Key": "Project", "Value": "Python-Project"},
+                    {"Key": "Environment", "Value": "dev"}
+                ]
+            }]
+        )
+        instance_id = run_instance["Instances"][0]["InstanceId"]
+        print(f"Created instance: {instance_id}, named: {name}")
+
+@cli.command(help="Stop instance by ID")
+@click.argument("instance_id")
+def ec2stop(instance_id):
+    ec2.stop_instances(InstanceIds=[instance_id])
+    print("Stopping instance", instance_id)
+
+@cli.command(help="Start instance by ID")
+@click.argument("instance_id")
+def ec2start(instance_id):
+    ec2.start_instances(InstanceIds=[instance_id])
+    print("Starting instance", instance_id)
+
+@cli.command(help="List instances created by this tool")
+def ec2list():
+    resp = ec2.describe_instances(
+        Filters=[{"Name": "tag:CreatedBy", "Values": [CREATED_BY_VAL]}]
+    )
+
+    instances = []
+    for r in resp.get("Reservations", []):
+        for inst in r.get("Instances", []):
+            instance_id = inst["InstanceId"]
+            state = inst["State"]["Name"]
+            if state == "terminated":
+                continue
+            inst_type = inst["InstanceType"]
+            ip = inst.get("PublicIpAddress", "N/A")
+            name = next(
+                (t["Value"] for t in inst.get("Tags", []) if t["Key"] == "Name"),
+                "N/A"
+            )
+            instances.append({
+                "InstanceId": instance_id,
+                "Name": name,
+                "State": state,
+                "Type": inst_type,
+                "PublicIP": ip
+            })
+            print(f"""
+                  Instance id: {instance_id}
+                  Instance name: {name}
+                  State: {state}
+                  Instance type: {inst_type}
+                  IP: {ip}""")
+
+if __name__ == "__main__":
+    cli()
+
+# create_instance("Ben-test4")
+# start_instance("i-01eddcdaaa8ba16cf")
+# stop_instance("i-0b9f4d9ebe7f2d65d")
+# list_of_instances()
+# create_instance("Ben-test4")
+# list_of_instances()
+
+
+
+
