@@ -38,12 +38,10 @@ Edit
   aws configure
   # or
   export AWS_PROFILE=myprofile
-⚙️ Installation
-Clone this repository:
+## ⚙️ Installation
 
-bash
-Copy
-Edit
+Clone this repository:
+```bash
 git clone https://github.com/benelbaz82/ben-awscli.git
 cd ben-awscli
 Install dependencies:
@@ -84,27 +82,3 @@ bash
 Copy
 Edit
 ben-awscli start i-0123456789abcdef0
-Terminate an instance (by ID)
-
-bash
-Copy
-Edit
-ben-awscli terminate i-0123456789abcdef0
-🖥 Demo Evidence
-Example terminal session:
-
-bash
-Copy
-Edit
-$ ben-awscli create TestInstance
-Created instance: i-0abcde12345f67890, named: TestInstance
-
-$ ben-awscli list
-Instance id: i-0abcde12345f67890
-Instance name: TestInstance
-State: running
-Instance type: t3.micro
-IP: 3.23.45.67
-
-$ ben-awscli stop i-0abcde12345f67890
-Stopping instance i-0abcde12345f67890
