@@ -14,11 +14,6 @@ This tool allows developers to create, start, stop, and list EC2 instances while
 | `stop`      | Stop a running EC2 instance (by ID)    | Only instances tagged with `CreatedBy=Ben-cli`.                                        |
 | `start`     | Start a stopped EC2 instance (by ID)   | Same tagging constraints as above.                                                     |
 
-
-yaml
-Copy
-Edit
-
 ---
 
 ## 📋 Requirements
