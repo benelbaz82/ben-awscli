@@ -39,46 +39,46 @@ Edit
 ⚙️ Installation
 Clone this repository:
 
-```bash
-git clone https://github.com/benelbaz82/ben-awscli.git
-cd ben-awscli
+  ```bash
+  git clone https://github.com/benelbaz82/ben-awscli.git
+  cd ben-awscli
 Install dependencies:
 
-```bash
-pip install -r requirements.txt
-Make the CLI executable and place it in your PATH:
+  ```bash
+  pip install -r requirements.txt
+  Make the CLI executable and place it in your PATH:
 
-```bash
-chmod +x ben-awscli
-mv ben-awscli ~/.local/bin/
+  ```bash
+  chmod +x ben-awscli
+  mv ben-awscli ~/.local/bin/
 
 ▶️ Usage
 Create a new instance
-```bash
-ben-awscli create MyInstance
-List instances created by this CLI
-```bash
-ben-awscli list
-Stop an instance (by ID)
-```bash
-ben-awscli stop i-0123456789abcdef0
-Start an instance (by ID)
-```bash
-ben-awscli start i-0123456789abcdef0
+  ```bash
+  ben-awscli create MyInstance
+  List instances created by this CLI
+  ```bash
+  ben-awscli list
+  Stop an instance (by ID)
+  ```bash
+  ben-awscli stop i-0123456789abcdef0
+  Start an instance (by ID)
+  ```bash
+  ben-awscli start i-0123456789abcdef0
 
 🖥 Demo Evidence
 Example terminal session:
 
-```bash
-$ ben-awscli create TestInstance
-Created instance: i-0abcde12345f67890, named: TestInstance
+  ```bash
+  $ ben-awscli create TestInstance
+  Created instance: i-0abcde12345f67890, named: TestInstance
 
-$ ben-awscli list
-Instance ID: i-0abcde12345f67890
-Name: TestInstance
-State: running
-Type: t3.micro
-IP: 3.23.45.67
+  $ ben-awscli list
+  Instance ID: i-0abcde12345f67890
+  Name: TestInstance
+  State: running
+  Type: t3.micro
+  IP: 3.23.45.67
 
-$ ben-awscli stop i-0abcde12345f67890
-Stopping instance i-0abcde12345f67890
+  $ ben-awscli stop i-0abcde12345f67890
+  Stopping instance i-0abcde12345f67890
