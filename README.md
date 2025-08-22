@@ -1,4 +1,4 @@
-# 🐧 Ben AWS CLI
+# 🐧 Ben's AWS CLI
 
 A lightweight, developer-friendly CLI tool for managing AWS EC2 instances using Python, `boto3`, and `click`.  
 This tool allows developers to create, start, stop, and list EC2 instances while enforcing safe, standardized practices.
@@ -39,66 +39,37 @@ Edit
 ⚙️ Installation
 Clone this repository:
 
-bash
-Copy
-Edit
+```bash
 git clone https://github.com/benelbaz82/ben-awscli.git
 cd ben-awscli
 Install dependencies:
 
-bash
-Copy
-Edit
+```bash
 pip install -r requirements.txt
 Make the CLI executable and place it in your PATH:
 
-bash
-Copy
-Edit
+```bash
 chmod +x ben-awscli
 mv ben-awscli ~/.local/bin/
 
 ▶️ Usage
 Create a new instance
-bash
-Copy
-Edit
+```bash
 ben-awscli create MyInstance
 List instances created by this CLI
-bash
-Copy
-Edit
+```bash
 ben-awscli list
 Stop an instance (by ID)
-bash
-Copy
-Edit
+```bash
 ben-awscli stop i-0123456789abcdef0
 Start an instance (by ID)
-bash
-Copy
-Edit
+```bash
 ben-awscli start i-0123456789abcdef0
-Terminate an instance (by ID)
-bash
-Copy
-Edit
-ben-awscli terminate i-0123456789abcdef0
-🧹 Cleanup
-To stay under the 2-instance cap, make sure to terminate instances that are no longer needed:
-
-bash
-Copy
-Edit
-ben-awscli terminate i-0123456789abcdef0
-Alternatively, instances can also be terminated via the AWS Management Console.
 
 🖥 Demo Evidence
 Example terminal session:
 
-bash
-Copy
-Edit
+```bash
 $ ben-awscli create TestInstance
 Created instance: i-0abcde12345f67890, named: TestInstance
 
