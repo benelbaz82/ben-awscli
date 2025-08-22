@@ -98,12 +98,6 @@ def ec2list():
 if __name__ == "__main__":
     cli()
 
-# create_instance("Ben-test4")
-# start_instance("i-01eddcdaaa8ba16cf")
-# stop_instance("i-0b9f4d9ebe7f2d65d")
-# list_of_instances()
-# create_instance("Ben-test4")
-# list_of_instances()
 
 
 
