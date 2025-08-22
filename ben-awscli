@@ -150,11 +150,16 @@ def s3list():
     found = False
     for b in resp["Buckets"]:
         name = b["Name"]
-        tags = s3.get_bucket_tagging(Bucket=name)["TagSet"]
-        created_by = next((t["Value"] for t in tags if t["Key"] == "CreatedBy"), None)
+        try:
+            tags = s3.get_bucket_tagging(Bucket=name)["TagSet"]
+            created_by = next((t["Value"] for t in tags if t["Key"] == "CreatedBy"), None)
+        except Exception:
+            created_by = None
+
         if created_by == CREATED_BY_VAL:
             print(f"- {name}")
             found = True
+
     if not found:
         print("No buckets created by this CLI were found.")
 
