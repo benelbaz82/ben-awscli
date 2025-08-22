@@ -20,8 +20,6 @@ This tool allows developers to create, start, stop, and list EC2 instances while
 
 - Active **AWS account**
 - IAM role or AWS profile with EC2 permissions
-- **Python 3.7+**
-- `pip` installed
 - AWS CLI configured:
   ```bash
   aws configure

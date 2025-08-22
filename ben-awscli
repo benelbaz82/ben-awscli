@@ -95,7 +95,7 @@ def ec2list():
                   Instance type: {inst_type}
                   IP: {ip}""")
 
-@cli.command(help="Create S3 bucket (default is private, use --public for public-read)")
+@cli.command(help="Create S3 bucket (private by default, add --public for public-read)")
 @click.argument("bucket_name")
 @click.option("--public", is_flag=True, help="Make bucket public-read")
 def s3create(bucket_name, public):
@@ -123,6 +123,34 @@ def s3create(bucket_name, public):
 
     except Exception as e:
         print("ERROR:", str(e))
+
+@cli.command(help="Upload file to an S3 bucket created by this CLI")
+@click.option("--bucket", required=True, help="Bucket name")
+@click.option("--file", required=True, help="Path to file")
+def s3upload(bucket, file):
+    tags = s3.get_bucket_tagging(Bucket=bucket)["TagSet"]
+    created_by = next((t["Value"] for t in tags if t["Key"] == "CreatedBy"), None)
+    if created_by != CREATED_BY_VAL:
+        print(f"ERROR: Bucket {bucket} was not created by this CLI.")
+        return
+
+    key = file.split("/")[-1]   # File name
+    s3.upload_file(file, bucket, key)
+    print(f"Uploaded {file} to s3://{bucket}/{key}")
+
+@cli.command(help="List S3 buckets created by this CLI")
+def s3list():
+    resp = s3.list_buckets()
+    found = False
+    for b in resp["Buckets"]:
+        name = b["Name"]
+        tags = s3.get_bucket_tagging(Bucket=name)["TagSet"]
+        created_by = next((t["Value"] for t in tags if t["Key"] == "CreatedBy"), None)
+        if created_by == CREATED_BY_VAL:
+            print(f"- {name}")
+            found = True
+    if not found:
+        print("No buckets created by this CLI were found.")
 
 if __name__ == "__main__":
     cli()
