@@ -36,49 +36,43 @@ Edit
 - AWS CLI configured:
   ```bash
   aws configure
-  # or
-  export AWS_PROFILE=myprofile
+  ```
 ## ⚙️ Installation
 
 Clone this repository:
 ```bash
 git clone https://github.com/benelbaz82/ben-awscli.git
 cd ben-awscli
+```
 Install dependencies:
-
-bash
-Copy
-Edit
+```bash
 pip install -r requirements.txt
+```
 Make the CLI executable and place it in your PATH:
 
-bash
-Copy
-Edit
+```bash
 chmod +x ben-awscli
 mv ben-awscli ~/.local/bin/
-▶️ Usage
+```
+## ▶️ Usage
+
 Create a new instance
 
-bash
-Copy
-Edit
+```bash
 ben-awscli create MyInstance
+```
 List instances created by this CLI
 
-bash
-Copy
-Edit
+```bash
 ben-awscli list
+```
 Stop an instance (by ID)
 
-bash
-Copy
-Edit
-ben-awscli stop i-0123456789abcdef0
+```bash
+ben-awscli stop {Instance ID}
+```
 Start an instance (by ID)
 
-bash
-Copy
-Edit
-ben-awscli start i-0123456789abcdef0
+```bash
+ben-awscli start {Instance ID}
+```
