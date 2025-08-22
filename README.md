@@ -13,13 +13,7 @@ This tool allows developers to create, start, stop, and list EC2 instances while
 | `list`      | List EC2 instances created by this CLI | Shows non-terminated instances tagged by the CLI.                                      |
 | `stop`      | Stop a running EC2 instance (by ID)    | Only instances tagged with `CreatedBy=Ben-cli`.                                        |
 | `start`     | Start a stopped EC2 instance (by ID)   | Same tagging constraints as above.                                                     |
-| `terminate` | Terminate an EC2 instance (by ID)      | Removes the instance and frees a slot under the cap.                                   |
 
-**Consistent tagging applied to every instance:**
-CreatedBy = Ben-cli
-Owner = Ben Elbaz
-Project = Python-Project
-Environment = dev
 
 yaml
 Copy
