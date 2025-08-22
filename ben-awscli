@@ -8,9 +8,13 @@ OWNER= "Ben Elbaz"
 ec2 = boto3.client("ec2")
 s3 = boto3.client("s3")
 
-@click.group(help="Ben's AWS management CLI")
+CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=120)
+
+@click.group(context_settings=CONTEXT_SETTINGS, help="Ben's AWS management CLI")
 def cli():
     pass
+
+#EC2
 
 def count_cli_instances():
     resp = ec2.describe_instances(
@@ -94,6 +98,8 @@ def ec2list():
                   State: {state}
                   Instance type: {inst_type}
                   IP: {ip}""")
+
+#S3
 
 @cli.command(help="Create S3 bucket (private by default, add --public for public-read)")
 @click.argument("bucket_name")
