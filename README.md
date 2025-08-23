@@ -1,7 +1,7 @@
 # 🐧 Ben's AWS CLI
 
-A lightweight, developer-friendly CLI tool for managing AWS EC2 instances using Python, `boto3`, and `click`.  
-This tool allows developers to create, start, stop, and list EC2 instances while enforcing safe, standardized practices.
+A lightweight, developer-friendly CLI tool for managing AWS resources using Python, boto3, and click.
+This tool allows developers to create, start, stop, and list AWS resources while enforcing safe, standardized practices.
 
 ---
 
