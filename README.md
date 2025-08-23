@@ -180,8 +180,11 @@ $ ben-awscli r53manage create --zone benben.com --name www.benben.com --type A -
 CREATE A www.benben.com -> 1.2.3.4 (zone benben.com)
 
 $ ben-awscli r53list
-Zone: benben.com (ID: Z04567891ABCDEFG12345)
+Zone: benben.com (ID: Z057644723CPCOMLF8ZVW)
   Records:
-    - A benben.com. -> 1.2.3.4
+    - NS benben.com. -> ns-231.awsdns-28.com., ns-1932.awsdns-49.co.uk., ns-1425.awsdns-50.org., ns-829.awsdns-39.net.
+    - SOA benben.com. -> ns-231.awsdns-28.com. awsdns-hostmaster.amazon.com. 1 7200 900 1209600 86400
     - A www.benben.com. -> 1.2.3.4
+    - AAAA www.benben.com. -> 5657:4558:749b:110c:8b24:de0d:f1f4:5897
+
 ```
