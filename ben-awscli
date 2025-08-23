@@ -7,6 +7,7 @@ OWNER= "Ben Elbaz"
 
 ec2 = boto3.client("ec2")
 s3 = boto3.client("s3")
+route53 = boto3.client("route53")
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=120)
 
@@ -14,7 +15,7 @@ CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'], max_content_width=12
 def cli():
     pass
 
-#EC2
+# EC2
 
 def count_cli_instances():
     resp = ec2.describe_instances(
@@ -99,7 +100,7 @@ def ec2list():
                   Instance type: {inst_type}
                   IP: {ip}""")
 
-#S3
+# S3
 
 @cli.command(help="Create S3 bucket (private by default, add --public for public-read)")
 @click.argument("bucket_name")
@@ -162,6 +163,91 @@ def s3list():
 
     if not found:
         print("No buckets created by this CLI were found.")
+
+# Route 53
+
+
+@cli.command(help="Create Route53 hosted zone (public)")
+@click.argument("domain")
+def r53create(domain):
+
+    resp = route53.create_hosted_zone(
+        Name=domain,
+        CallerReference=domain,  # Unique identifier
+        HostedZoneConfig={"Comment": "Managed by Ben-cli", "PrivateZone": False},
+    )
+
+    zone_id = resp["HostedZone"]["Id"].split("/")[-1]  # /hostedzone/Z0123456789ABCDEF -> Z0123456789ABCDEF
+
+    route53.change_tags_for_resource(
+        ResourceType="hostedzone",
+        ResourceId=zone_id,
+        AddTags=[
+            {"Key": "CreatedBy", "Value": CREATED_BY_VAL},
+            {"Key": "Owner", "Value": OWNER},
+            {"Key": "Project", "Value": "Python-Project"},
+            {"Key": "Environment", "Value": "dev"},
+        ],
+    )
+
+    print(f"Hosted zone created: {domain} (id: {zone_id})")
+
+@cli.command(help="Manage Route53 records (create/update/delete)")
+@click.argument("action", type=click.Choice(["create","update","delete"]))
+@click.option("--zone", required=True, help="Domain name of the hosted zone (e.g., benben.com)")
+@click.option("--name", required=True, help="Record name (e.g., www.benben.com)")
+@click.option("--type", required=True, help="Record type (A, CNAME, TXT, etc.)")
+@click.option("--value", required=True, help="Record value (e.g., 1.2.3.4)")
+@click.option("--ttl", default=300, show_default=True)
+def r53manage(action, zone, name, type, value, ttl):
+
+    zones = route53.list_hosted_zones_by_name(DNSName=zone)["HostedZones"]
+    if not zones:
+        print("ERROR: Zone not found")
+        return
+    zid = zones[0]["Id"].split("/")[-1]  # /hostedzone/Z0123456789ABCDEF -> Z0123456789ABCDEF
+
+    tags = route53.list_tags_for_resource(ResourceType="hostedzone", ResourceId=zid)["ResourceTagSet"]["Tags"]
+    created_by = next((t["Value"] for t in tags if t["Key"] == "CreatedBy"), None)
+    if created_by != CREATED_BY_VAL:
+        print("ERROR: Zone is not owned by this CLI")
+        return
+
+    action_map = {"create":"CREATE","update":"UPSERT","delete":"DELETE"}
+    record = {
+        "Name": name,
+        "Type": type,
+        "TTL": ttl,
+        "ResourceRecords": [{"Value": value}]
+    }
+
+    route53.change_resource_record_sets(
+        HostedZoneId=zid,
+        ChangeBatch={"Changes": [{"Action": action_map[action], "ResourceRecordSet": record}]}
+    )
+    print(f"{action_map[action]} {type} {name} -> {value} (zone {zone})")
+
+@cli.command(help="List CLI-created Route53 zones and their records")
+def r53list():
+    zones = route53.list_hosted_zones()["HostedZones"]
+
+    for z in zones:
+        zid = z["Id"].split("/")[-1]  # /hostedzone/Z0123456789ABCDEF -> Z0123456789ABCDEF
+
+        tags = route53.list_tags_for_resource(ResourceType="hostedzone", ResourceId=zid)["ResourceTagSet"]["Tags"]
+        created_by = next((t["Value"] for t in tags if t["Key"] == "CreatedBy"), None)
+        if created_by != CREATED_BY_VAL:
+            continue
+
+        print(f"Zone: {z['Name'].rstrip('.')} (ID: {zid})")
+        print("  Records:")
+
+        records = route53.list_resource_record_sets(HostedZoneId=zid)["ResourceRecordSets"]
+        for r in records:
+            values = ", ".join([v["Value"] for v in r.get("ResourceRecords", [])])
+            print(f"    - {r['Type']} {r['Name']} -> {values if values else 'N/A'}")
+
+        print()
 
 if __name__ == "__main__":
     cli()

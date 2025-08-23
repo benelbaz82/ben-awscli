@@ -2,6 +2,8 @@
   <dictionary name="project">
     <words>
       <w>elbaz</w>
+      <w>hostedzone</w>
+      <w>rrset</w>
     </words>
   </dictionary>
 </component>
