@@ -26,7 +26,7 @@ This tool allows developers to create, start, stop, and list EC2 instances while
 ### 🌐 Route53
 | Command       | Description                                  | Behavior & Constraints                                        |
 |---------------|----------------------------------------------|---------------------------------------------------------------|
-| `r53create`   | Create a new hosted zone                     | Creates zone with tags (`CreatedBy=Ben-cli`).                 |
+| `r53create`   | Create a new hosted zone                     | Creates zone.                 |
 | `r53manage`   | Manage DNS records (create/update/delete)    | Works only in zones created by this CLI.                      |
 | `r53list`     | List CLI-created hosted zones and their records | Shows only zones and records tagged by this CLI.             |
 ---
