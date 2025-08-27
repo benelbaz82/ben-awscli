@@ -63,17 +63,17 @@ mv ben-awscli ~/.local/bin/
 Create a new instance
 
 ```bash
-ben-awscli create MyInstance
+ben-awscli ec2create MyInstance
 ```
 List instances created by this CLI
 
 ```bash
-ben-awscli list
+ben-awscli ec2list
 ```
 Stop an instance (by ID)
 
 ```bash
-ben-awscli stop {Instance ID}
+ben-awscli ec2stop {Instance ID}
 ```
 Start an instance (by ID)
 
