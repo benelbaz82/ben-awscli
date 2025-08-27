@@ -78,7 +78,7 @@ ben-awscli ec2stop {Instance ID}
 Start an instance (by ID)
 
 ```bash
-ben-awscli start {Instance ID}
+ben-awscli ec2start {Instance ID}
 ```
 
 ### 🪣 S3 Examples
